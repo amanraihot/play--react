@@ -1,35 +1,35 @@
 import logo from './logo.svg';
 import'./style.css';
 import { render } from '@testing-library/react';
-import { useState } from 'react';
+import { useState , useEffect} from 'react';
 
 const App = () => {
     
-    return (
-        <>
-    <ContactCard
-    avatar="https://via.placeholder.com/150"
-    name="Jenny Han"
-    email="jenny.han@notreal.com"
-    age={25}
-    />
+   const[contacts,setContacts] = useState([]);
+    
+   useEffect(() => {
+    fetch("https://randomuser.me/api/?results=3")
+      .then(response => response.json())
+      .then(data => {
+        setContacts(data.results);
+      });
+  }, []);
 
-  <ContactCard
-  avatar="https://via.placeholder.com/150"
-  name="Jason Long"
-  email="jason.long@notreal.com"
-  age={45}
- />
+     
+        return (
+            <>
+            {contacts.map(contact => (
+                <ContactCard
+                avatar={contact.picture.large}
+                name={contact.name.first + " " + contact.name.last}
+                email={contact.email}
+                age={contact.dob.age}
+                />
+            ))}
+            </>
+        );
 
-<ContactCard
-  avatar="https://via.placeholder.com/150"
-  name="Peter Pan"
-  email="peter.pan@neverland.com"
-  age={100}
-/>
-</>
-      );
-}
+};
 const ContactCard = props => {
     const[showAge,setShowAge] = useState(false);
     return (
